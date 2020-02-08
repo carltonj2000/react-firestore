@@ -1,6 +1,7 @@
 # cj add start
 .DS_Store
 src/config/serviceAccountKey.js
+scripts/serviceAccountKey.json
 # cj add start
 # Logs
 logs
