@@ -14,7 +14,10 @@ const useStyles = makeStyles(theme => ({
 
 const ProjectList = () => {
   const classes = useStyles();
-  const { state } = React.useContext(projectStore);
+  const { state, getProjects } = React.useContext(projectStore);
+  React.useEffect(() => {
+    getProjects();
+  }, [getProjects]);
   return (
     <div className={classes.root}>
       {state.projects &&
