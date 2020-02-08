@@ -5,11 +5,11 @@
  */
 import React, { createContext } from "react";
 
-import projects from "./config/projectsTestData";
+//import projects from "./config/projectsTestData"; // for testing
 
-import fs from "./config/fbConfig.js";
+import fireStore from "./config/fbConfig.js";
 
-const initialState = { projects };
+const initialState = { projects: [] };
 const projectStore = createContext(initialState);
 const { Provider } = projectStore;
 
@@ -31,11 +31,14 @@ const ProjectStoreProvider = ({ children }) => {
   }, initialState);
 
   const getProjects = async () => {
-    const projects = await fs.getProjects();
+    const projects = await fireStore.getProjects();
     dispatch({ type: SET_PROJECTS, projects });
   };
 
   const createProject = async project => {
+    project.date = new Date();
+    const ref = await fireStore.createProject(project);
+    project.ref = ref;
     dispatch({ type: CREATE_PROJECT, project });
   };
 

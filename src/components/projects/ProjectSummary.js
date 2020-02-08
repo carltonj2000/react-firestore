@@ -22,12 +22,13 @@ const useStyles = makeStyles(theme => ({
 
 const ProjectSummary = props => {
   const classes = useStyles();
+  const { project } = props;
   return (
     <Paper className={classes.item}>
-      <Typography variant="h4">{props.project.title}</Typography>
+      <Typography variant="h4">{project.title}</Typography>
       <Typography variant="body1">Posted by Carlton</Typography>
       <Typography variant="body2" className={classes.date}>
-        5th February, 10:30 AM
+        {project.date ? "has date" : "5th February, 10:30 AM"}
       </Typography>
     </Paper>
   );

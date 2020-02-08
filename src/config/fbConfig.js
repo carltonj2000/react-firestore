@@ -14,12 +14,15 @@ const getProjects = () =>
       const projects = [];
       querySnapshot.forEach(doc => {
         const data = doc.data();
-        data.id = doc.id;
+        data.ref = doc.id;
         projects.push(data);
       });
       return projects;
     });
 
+const createProject = project => db.collection("projects").add(project);
+
 export default {
-  getProjects
+  getProjects,
+  createProject
 };

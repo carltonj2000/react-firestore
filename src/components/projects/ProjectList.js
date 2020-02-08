@@ -1,5 +1,7 @@
 import React from "react";
+
 import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
 
 import ProjectSummary from "./ProjectSummary";
 
@@ -18,11 +20,17 @@ const ProjectList = () => {
   React.useEffect(() => {
     getProjects();
   }, [getProjects]);
+  if (state.projects && state.projects.length === 0)
+    return (
+      <div className={classes.root}>
+        <Typography variant="h4">Loading Projects ...</Typography>
+      </div>
+    );
   return (
     <div className={classes.root}>
       {state.projects &&
         state.projects.map(project => (
-          <ProjectSummary key={project.id} project={project} />
+          <ProjectSummary key={project.ref} project={project} />
         ))}
     </div>
   );
