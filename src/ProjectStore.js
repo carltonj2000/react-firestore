@@ -9,61 +9,59 @@ import React, { createContext } from "react";
 
 import fireStore from "./config/fbConfig.js";
 
-const initialState = [];
+const initialState = {};
 const projectStore = createContext(initialState);
 const { Provider } = projectStore;
 
 const SET_PROJECTS = "SET_PROJECTS";
-const CREATE_PROJECT = "CREATE_PROJECTS";
-const DELETE_PROJECT = "DELETE_PROJECTS";
-const UPDATE_PROJECT = "UPDATE_PROJECTS";
+const CREATE_PROJECT = "CREATE_PROJECT";
+const DELETE_PROJECT = "DELETE_PROJECT";
+const UPDATE_PROJECT = "UPDATE_PROJECT";
+
+const projectReducer = (state, action) => {
+  switch (action.type) {
+    case SET_PROJECTS:
+      return action.projects;
+    case CREATE_PROJECT:
+      const createState = { ...state };
+      createState[action.id] = action.project;
+      return createState;
+    case DELETE_PROJECT:
+      const deleteState = { ...state };
+      delete deleteState[action.id];
+      return deleteState;
+    case UPDATE_PROJECT:
+      const updateState = { ...state };
+      updateState[action.id] = action.project;
+      return updateState;
+    default:
+      throw new Error();
+  }
+};
 
 const ProjectStoreProvider = ({ children }) => {
-  const [projects, dispatch] = React.useReducer((state, action) => {
-    switch (action.type) {
-      case SET_PROJECTS:
-        return action.projects;
-      case CREATE_PROJECT:
-        return [...state, action.project];
-      case DELETE_PROJECT:
-        return state.filter(p => p.ref !== action.project.ref);
-      case UPDATE_PROJECT:
-        const newState = [
-          ...state.filter(p => p.ref !== action.project.ref),
-          action.project
-        ];
-        console.log(action.project.ref, state, newState);
-        return newState;
-      case "bye":
-        return { msg: "bye" };
-      default:
-        throw new Error();
-    }
-  }, initialState);
+  const [projects, dispatch] = React.useReducer(projectReducer, initialState);
 
   const getProjects = React.useCallback(async () => {
     const projects = await fireStore.getProjects();
     dispatch({ type: SET_PROJECTS, projects });
-  }, [dispatch]);
+  }, []);
 
-  const createProject = async project => {
+  const deleteProject = React.useCallback(async id => {
+    await fireStore.deleteProject(id);
+    dispatch({ type: DELETE_PROJECT, id });
+  }, []);
+
+  const createProject = React.useCallback(async project => {
     project.date = new Date();
-    const ref = await fireStore.createProject(project);
-    project.ref = ref.id;
-    console.log("create project", project);
-    dispatch({ type: CREATE_PROJECT, project });
-  };
+    const pRef = await fireStore.createProject(project);
+    dispatch({ type: CREATE_PROJECT, project, id: pRef.id });
+  }, []);
 
-  const deleteProject = async project => {
-    await fireStore.deleteProject(project);
-    dispatch({ type: DELETE_PROJECT, project });
-  };
-
-  const updateProject = async project => {
-    await fireStore.updateProject({ ...project });
-    console.log(project);
-    dispatch({ type: UPDATE_PROJECT, project });
-  };
+  const updateProject = React.useCallback(async (project, id) => {
+    await fireStore.updateProject(project, id);
+    dispatch({ type: UPDATE_PROJECT, project, id });
+  }, []);
 
   return (
     <Provider

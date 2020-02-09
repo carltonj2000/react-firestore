@@ -47,10 +47,9 @@ const CreateProject = () => {
   const { projects, createProject, updateProject } = React.useContext(
     projectStore
   );
-  const project = id ? projects.filter(p => (p.ref = id))[0] : null;
+  const project = projects[id];
   const onSubmit = project => {
-    console.log(id, project);
-    if (id) updateProject({ ...project, ref: id });
+    if (id) updateProject(project, id);
     else createProject(project);
     history.push("/");
   };

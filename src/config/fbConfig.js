@@ -11,31 +11,24 @@ const getProjects = () =>
     .collection("projects")
     .get()
     .then(querySnapshot => {
-      const projects = [];
-      querySnapshot.forEach(doc => {
-        const data = doc.data();
-        data.ref = doc.id;
-        projects.push(data);
-      });
+      const projects = {};
+      querySnapshot.forEach(doc => (projects[doc.id] = doc.data()));
       return projects;
     });
 
 const createProject = project => db.collection("projects").add(project);
-const updateProject = project => {
-  console.log(project);
-  const ref = project.ref;
-  delete project.ref;
-  console.log(ref);
+
+const updateProject = (project, id) => {
   return db
     .collection("projects")
-    .doc(ref)
+    .doc(id)
     .set(project);
 };
 
-const deleteProject = project =>
+const deleteProject = ref =>
   db
     .collection("projects")
-    .doc(project.ref)
+    .doc(ref)
     .delete();
 
 export default {

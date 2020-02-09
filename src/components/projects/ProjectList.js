@@ -22,7 +22,7 @@ const ProjectList = () => {
     getProjects();
   }, [getProjects]);
 
-  if (projects && projects.length === 0)
+  if (projects && Object.keys(projects).length === 0)
     return (
       <div className={classes.root}>
         <Typography variant="h4">Loading Projects ...</Typography>
@@ -32,8 +32,8 @@ const ProjectList = () => {
   return (
     <div className={classes.root}>
       {projects &&
-        projects.map(project => (
-          <ProjectSummary key={project.ref} project={project} />
+        Object.keys(projects).map(key => (
+          <ProjectSummary key={key} id={key} project={projects[key]} />
         ))}
     </div>
   );
