@@ -34,6 +34,9 @@ function App() {
               <Route path="/createproject">
                 <CreateProject />
               </Route>
+              <Route path="/updateproject/:id">
+                <CreateProject />
+              </Route>
               <Route exact path="/">
                 <Dashboard />
               </Route>

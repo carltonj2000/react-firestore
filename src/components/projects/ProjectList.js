@@ -16,20 +16,23 @@ const useStyles = makeStyles(theme => ({
 
 const ProjectList = () => {
   const classes = useStyles();
-  const { state, getProjects } = React.useContext(projectStore);
+  const { projects, getProjects } = React.useContext(projectStore);
+
   React.useEffect(() => {
     getProjects();
   }, [getProjects]);
-  if (state.projects && state.projects.length === 0)
+
+  if (projects && projects.length === 0)
     return (
       <div className={classes.root}>
         <Typography variant="h4">Loading Projects ...</Typography>
       </div>
     );
+
   return (
     <div className={classes.root}>
-      {state.projects &&
-        state.projects.map(project => (
+      {projects &&
+        projects.map(project => (
           <ProjectSummary key={project.ref} project={project} />
         ))}
     </div>

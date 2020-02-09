@@ -9,20 +9,31 @@ import React, { createContext } from "react";
 
 import fireStore from "./config/fbConfig.js";
 
-const initialState = { projects: [] };
+const initialState = [];
 const projectStore = createContext(initialState);
 const { Provider } = projectStore;
 
-const CREATE_PROJECT = "CREATE_PROJECTS";
 const SET_PROJECTS = "SET_PROJECTS";
+const CREATE_PROJECT = "CREATE_PROJECTS";
+const DELETE_PROJECT = "DELETE_PROJECTS";
+const UPDATE_PROJECT = "UPDATE_PROJECTS";
 
 const ProjectStoreProvider = ({ children }) => {
-  const [state, dispatch] = React.useReducer((state, action) => {
+  const [projects, dispatch] = React.useReducer((state, action) => {
     switch (action.type) {
-      case CREATE_PROJECT:
-        return { projects: [...state.projects, action.project] };
       case SET_PROJECTS:
-        return { projects: action.projects };
+        return action.projects;
+      case CREATE_PROJECT:
+        return [...state, action.project];
+      case DELETE_PROJECT:
+        return state.filter(p => p.ref !== action.project.ref);
+      case UPDATE_PROJECT:
+        const newState = [
+          ...state.filter(p => p.ref !== action.project.ref),
+          action.project
+        ];
+        console.log(action.project.ref, state, newState);
+        return newState;
       case "bye":
         return { msg: "bye" };
       default:
@@ -30,20 +41,40 @@ const ProjectStoreProvider = ({ children }) => {
     }
   }, initialState);
 
-  const getProjects = async () => {
+  const getProjects = React.useCallback(async () => {
     const projects = await fireStore.getProjects();
     dispatch({ type: SET_PROJECTS, projects });
-  };
+  }, [dispatch]);
 
   const createProject = async project => {
     project.date = new Date();
     const ref = await fireStore.createProject(project);
-    project.ref = ref;
+    project.ref = ref.id;
+    console.log("create project", project);
     dispatch({ type: CREATE_PROJECT, project });
   };
 
+  const deleteProject = async project => {
+    await fireStore.deleteProject(project);
+    dispatch({ type: DELETE_PROJECT, project });
+  };
+
+  const updateProject = async project => {
+    await fireStore.updateProject({ ...project });
+    console.log(project);
+    dispatch({ type: UPDATE_PROJECT, project });
+  };
+
   return (
-    <Provider value={{ state, createProject, getProjects }}>
+    <Provider
+      value={{
+        projects,
+        createProject,
+        getProjects,
+        deleteProject,
+        updateProject
+      }}
+    >
       {children}
     </Provider>
   );

@@ -1,5 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useParams, useHistory } from "react-router-dom";
 
 import { fade, makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
@@ -40,23 +41,29 @@ const useStyles = makeStyles(theme => ({
 
 const CreateProject = () => {
   const classes = useStyles();
-  const { handleSubmit, register, errors, reset } = useForm();
-  const { createProject } = React.useContext(projectStore);
+  const { id } = useParams();
+  const history = useHistory();
+  const { handleSubmit, register, errors } = useForm();
+  const { projects, createProject, updateProject } = React.useContext(
+    projectStore
+  );
+  const project = id ? projects.filter(p => (p.ref = id))[0] : null;
   const onSubmit = project => {
-    console.log(project);
-    project.id = Math.floor(Math.random() * 1000);
-    createProject(project);
-    reset();
+    console.log(id, project);
+    if (id) updateProject({ ...project, ref: id });
+    else createProject(project);
+    history.push("/");
   };
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <Typography variant="h4">New Project</Typography>
+        <Typography variant="h4">{project ? "Edit" : "New"} Project</Typography>
         <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
           <TextField
             label="Title"
             className={classes.input}
+            defaultValue={project ? project.title : ""}
             inputProps={{
               name: "title"
             }}
@@ -74,6 +81,7 @@ const CreateProject = () => {
             rows="4"
             label="Content"
             className={classes.input}
+            defaultValue={project ? project.content : ""}
             inputProps={{
               name: "content"
             }}
@@ -83,7 +91,7 @@ const CreateProject = () => {
             helperText={errors.content ? errors.content.message : null}
           />
           <Button color="inherit" type="submit" className={classes.button}>
-            Create
+            {project ? "Update" : "Create"}
           </Button>
         </form>
       </Paper>
