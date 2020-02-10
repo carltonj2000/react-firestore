@@ -18,22 +18,25 @@ const CREATE_PROJECT = "CREATE_PROJECT";
 const DELETE_PROJECT = "DELETE_PROJECT";
 const UPDATE_PROJECT = "UPDATE_PROJECT";
 
+const CREATE_PROJECT_ERROR = "CREATE_PROJECT_ERROR";
+
 const projectReducer = (state, action) => {
   switch (action.type) {
     case SET_PROJECTS:
       return action.projects;
     case CREATE_PROJECT:
-      const createState = { ...state };
-      createState[action.id] = action.project;
-      return createState;
+      state[action.id] = action.project;
+      return state;
+    case CREATE_PROJECT_ERROR:
+      state[CREATE_PROJECT_ERROR] = action.error;
+      return state;
     case DELETE_PROJECT:
       const deleteState = { ...state };
       delete deleteState[action.id];
       return deleteState;
     case UPDATE_PROJECT:
-      const updateState = { ...state };
-      updateState[action.id] = action.project;
-      return updateState;
+      state[action.id] = action.project;
+      return state;
     default:
       throw new Error();
   }
@@ -53,9 +56,16 @@ const ProjectStoreProvider = ({ children }) => {
   }, []);
 
   const createProject = React.useCallback(async project => {
-    project.date = new Date();
-    const pRef = await fireStore.createProject(project);
-    dispatch({ type: CREATE_PROJECT, project, id: pRef.id });
+    try {
+      project.createdAt = new Date();
+      project.authorFirstName = "Carlton";
+      project.authorLastName = "Joseph";
+      project.authorId = "1";
+      const pRef = await fireStore.createProject(project);
+      dispatch({ type: CREATE_PROJECT, project, id: pRef.id });
+    } catch (error) {
+      dispatch({ type: CREATE_PROJECT_ERROR, error });
+    }
   }, []);
 
   const updateProject = React.useCallback(async (project, id) => {

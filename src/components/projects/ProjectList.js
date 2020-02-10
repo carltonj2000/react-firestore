@@ -32,8 +32,8 @@ const ProjectList = () => {
   return (
     <div className={classes.root}>
       {projects &&
-        Object.keys(projects).map(key => (
-          <ProjectSummary key={key} id={key} project={projects[key]} />
+        Object.keys(projects).map(k => (
+          <ProjectSummary key={k} id={k} project={projects[k]} />
         ))}
     </div>
   );

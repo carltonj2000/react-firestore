@@ -49,7 +49,7 @@ const CreateProject = () => {
   );
   const project = projects[id];
   const onSubmit = project => {
-    if (id) updateProject(project, id);
+    if (id) updateProject({ ...projects[id], ...project }, id);
     else createProject(project);
     history.push("/");
   };

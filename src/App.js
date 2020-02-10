@@ -7,8 +7,8 @@ import Navbar from "./components/Layout/NavBar";
 import SignIn from "./components/auth/SignIn";
 import SignUp from "./components/auth/SignUp";
 import Dashboard from "./components/dashboard/Dashboard";
-import ProjectDetails from "./components/projects/ProjectDetails";
 import CreateProject from "./components/projects/CreateProject";
+import ProjectDetails from "./components/projects/ProjectDetails";
 
 import { AuthStoreProvider } from "./AuthStore";
 import { ProjectStoreProvider } from "./ProjectStore";
@@ -22,9 +22,6 @@ function App() {
             <CssBaseline />
             <Navbar />
             <Switch>
-              <Route path="/project/:id">
-                <ProjectDetails />
-              </Route>
               <Route path="/signin">
                 <SignIn />
               </Route>
@@ -36,6 +33,9 @@ function App() {
               </Route>
               <Route path="/updateproject/:id">
                 <CreateProject />
+              </Route>
+              <Route path="/project/:id">
+                <ProjectDetails />
               </Route>
               <Route exact path="/">
                 <Dashboard />

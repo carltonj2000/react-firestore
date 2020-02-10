@@ -35,27 +35,30 @@ const ProjectSummary = props => {
   const { deleteProject } = React.useContext(projectStore);
   const { project, id } = props;
 
-  const handleDelete = k => {
+  const handleDelete = k => () => {
     deleteEnSet(true);
     deleteProject(k);
   };
-  const handleEdit = k => history.push(`/updateproject/${k}`);
+  const handleEdit = k => () => history.push(`/updateproject/${k}`);
+  const handleDetails = k => () => history.push(`/project/${k}`);
 
   return (
     <Paper className={classes.item}>
-      <Typography variant="h4">{project.title}</Typography>
+      <Typography variant="h4" onClick={handleDetails(id)}>
+        {project.title}
+      </Typography>
       <Typography variant="body1">Posted by Carlton</Typography>
       <Typography variant="body2" className={classes.date}>
-        {project.date
-          ? moment(project.date.seconds * 1000).format(
+        {project.createdAt
+          ? moment(project.createdAt.seconds * 1000).format(
               "MMMM Do YYYY, h:mm:ss a"
             )
           : "5th February, 10:30 AM"}
       </Typography>
-      <IconButton onClick={() => handleDelete(id)} disabled={deleteEn}>
+      <IconButton onClick={handleDelete(id)} disabled={deleteEn}>
         <DeleteIcon />
       </IconButton>
-      <IconButton onClick={() => handleEdit(id)}>
+      <IconButton onClick={handleEdit(id)}>
         <EditIcon />
       </IconButton>
     </Paper>
