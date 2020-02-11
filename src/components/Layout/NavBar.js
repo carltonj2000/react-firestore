@@ -10,6 +10,8 @@ import MenuIcon from "@material-ui/icons/Menu";
 import SignInLinks from "./SignedInLinks";
 import SignOutLinks from "./SignedOutLinks";
 
+import { authStore } from "../../AuthStore";
+
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1
@@ -26,6 +28,7 @@ const useStyles = makeStyles(theme => ({
 
 const Navbar = () => {
   const classes = useStyles();
+  const { currentUser } = React.useContext(authStore);
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -46,10 +49,7 @@ const Navbar = () => {
           >
             Sophie And Champagne
           </Typography>
-          <div>
-            <SignOutLinks />
-            <SignInLinks />
-          </div>
+          <div>{currentUser ? <SignInLinks /> : <SignOutLinks />}</div>
         </Toolbar>
       </AppBar>
     </div>

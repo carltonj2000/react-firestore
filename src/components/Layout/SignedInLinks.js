@@ -1,9 +1,11 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 
 import { fade, makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
+
+import { authStore } from "../../AuthStore";
 
 const useStyles = makeStyles(theme => ({
   user: {
@@ -21,12 +23,20 @@ const useStyles = makeStyles(theme => ({
 }));
 const SignInLinks = () => {
   const classes = useStyles();
+  const history = useHistory();
+  const { logoutUser } = React.useContext(authStore);
+
+  const handleLogout = () => {
+    logoutUser();
+    history.push("/");
+  };
+
   return (
     <>
       <Button color="inherit" component={NavLink} to="/createproject">
         New Project
       </Button>
-      <Button color="inherit" component={NavLink} to="/">
+      <Button color="inherit" onClick={handleLogout}>
         Log Out
       </Button>
       <Typography

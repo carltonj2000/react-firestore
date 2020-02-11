@@ -1,5 +1,6 @@
 import firebase from "firebase/app";
 import "firebase/firestore";
+import "firebase/auth";
 
 import serviceAccount from "./serviceAccountKey.js";
 
@@ -31,9 +32,24 @@ const deleteProject = ref =>
     .doc(ref)
     .delete();
 
+const onAuthStateChanged = cb => firebase.auth().onAuthStateChanged(cb);
+const createUser = user =>
+  firebase.auth().createUserWithEmailAndPassword(user.email, user.password);
+const loginUser = user =>
+  firebase.auth().signInWithEmailAndPassword(user.email, user.password);
+const logoutUser = user => firebase.auth().signOut();
+
+const createUserInDb = user =>
+  console.log(user) || db.collection("users").add(user);
+
 export default {
   getProjects,
   createProject,
   deleteProject,
-  updateProject
+  updateProject,
+  onAuthStateChanged,
+  createUser,
+  loginUser,
+  logoutUser,
+  createUserInDb
 };

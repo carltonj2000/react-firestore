@@ -2,6 +2,7 @@ import React from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import ProjectSummary from "./ProjectSummary";
 
@@ -26,6 +27,7 @@ const ProjectList = () => {
     return (
       <div className={classes.root}>
         <Typography variant="h4">Loading Projects ...</Typography>
+        <CircularProgress />
       </div>
     );
 

@@ -1,11 +1,14 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useHistory } from "react-router-dom";
 
 import { fade, makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
+
+import { authStore } from "../../AuthStore";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -39,8 +42,12 @@ const useStyles = makeStyles(theme => ({
 const SignUp = () => {
   const classes = useStyles();
   const { handleSubmit, register, errors } = useForm();
-  const onSubmit = values => {
-    console.log(values);
+  const history = useHistory();
+  const { createUser } = React.useContext(authStore);
+  const onSubmit = user => {
+    console.log(user);
+    createUser(user);
+    history.push("/");
   };
 
   return (
@@ -99,7 +106,7 @@ const SignUp = () => {
         */}
           <TextField
             label="Password"
-            type="password"
+            //type="password"
             className={classes.input}
             inputProps={{
               name: "password"
@@ -107,7 +114,7 @@ const SignUp = () => {
             inputRef={register({
               required: "Required",
               pattern: {
-                value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+                value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[a-zA-Z\d@$!%*#?&]{8,}$/,
                 message: "Password 8+ chars, 1+ digit, 1+ ucase, 1+ lcase!"
               }
             })}

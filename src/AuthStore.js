@@ -1,38 +1,35 @@
-/*
- * Store code below based on
- * https://blog.logrocket.com/use-hooks-and-context-not-react-and-redux/
- */
-import React, { createContext, useReducer } from "react";
+import React from "react";
 
-const initialState = { msg: "hi" };
-const authStore = createContext(initialState);
+import fireStore from "./config/fbConfig.js";
+
+const authStore = React.createContext(null);
 const { Provider } = authStore;
 
 const AuthStoreProvider = ({ children }) => {
-  const [state, dispatch] = useReducer((state, action) => {
-    switch (action.type) {
-      case "bye":
-        const newState = { msg: "bye" };
-        return newState;
-      default:
-        throw new Error();
-    }
-  }, initialState);
+  const [currentUser, currentUserSet] = React.useState(null);
 
-  const sleep = time => new Promise(resolve => setTimeout(resolve, time));
-  const customDispatch = React.useCallback(async action => {
-    switch (action.type) {
-      case "wait-bye":
-        await sleep(1000);
-        dispatch({ type: "bye" });
-        break;
-      default:
-        dispatch(action);
-    }
+  React.useEffect(() => {
+    fireStore.onAuthStateChanged(currentUserSet);
+  }, []);
+
+  const createUser = React.useCallback(async user => {
+    const result = await fireStore.createUser(user);
+    await fireStore.createUserInDb({ ...user, uid: result.user.uid });
+  }, []);
+
+  const loginUser = React.useCallback(async user => {
+    const result = await fireStore.loginUser(user);
+    console.log(result.user.uid);
+  }, []);
+
+  const logoutUser = React.useCallback(() => {
+    fireStore.logoutUser();
   }, []);
 
   return (
-    <Provider value={{ state, dispatch: customDispatch }}>{children}</Provider>
+    <Provider value={{ currentUser, createUser, loginUser, logoutUser }}>
+      {children}
+    </Provider>
   );
 };
 
