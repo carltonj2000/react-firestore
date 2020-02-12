@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
 const SignInLinks = () => {
   const classes = useStyles();
   const history = useHistory();
-  const { logoutUser } = React.useContext(authStore);
+  const { auth, logoutUser } = React.useContext(authStore);
 
   const handleLogout = () => {
     logoutUser();
@@ -45,7 +45,8 @@ const SignInLinks = () => {
         component={NavLink}
         to="/"
       >
-        Carlton
+        {auth.user && auth.user.firstName}
+        {auth.user && auth.user.lastName[0]}
       </Typography>
     </>
   );

@@ -45,7 +45,6 @@ const SignIn = () => {
   const { handleSubmit, register, errors } = useForm();
   const { auth, states, loginUser } = React.useContext(authStore);
   const onSubmit = values => {
-    console.log(values);
     loginUser(values);
     history.push("/");
   };

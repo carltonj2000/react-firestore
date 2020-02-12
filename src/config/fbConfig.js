@@ -34,14 +34,24 @@ const deleteProject = ref =>
     .delete();
 
 const onAuthStateChanged = cb => auth.onAuthStateChanged(cb);
-const createUser = ({ email, password }) =>
-  auth.createUserWithEmailAndPassword(email, password);
-const loginUser = ({ email, password }) =>
-  auth.signInWithEmailAndPassword(email, password);
-const logoutUser = () => auth.signOut();
+const createUser = user =>
+  auth.createUserWithEmailAndPassword(user.email, user.password).then(resp =>
+    db
+      .collection("users")
+      .doc(resp.user.uid)
+      .set(user)
+  );
 
-const createUserInDb = user =>
-  console.log(user) || db.collection("users").add(user);
+const getUserProfile = uid =>
+  db
+    .collection("users")
+    .doc(uid)
+    .get()
+    .then(snapshot => snapshot.data());
+
+const loginUser = user =>
+  auth.signInWithEmailAndPassword(user.email, user.password);
+const logoutUser = () => auth.signOut();
 
 export default {
   getProjects,
@@ -52,5 +62,5 @@ export default {
   createUser,
   loginUser,
   logoutUser,
-  createUserInDb
+  getUserProfile
 };

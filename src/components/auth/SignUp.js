@@ -45,7 +45,6 @@ const SignUp = () => {
   const history = useHistory();
   const { auth, states, createUser } = React.useContext(authStore);
   const onSubmit = user => {
-    console.log(user);
     createUser(user);
     history.push("/");
   };

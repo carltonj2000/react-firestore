@@ -18,8 +18,9 @@ const { Provider } = authStore;
 
 const CREATING_USER = "CREATING_USER";
 const LOGGING_IN = "LOGGING_IN";
+const UPDATE_PROFILE = "UPDATE_PROFILE";
 const LOGGING_OUT = "LOGGING_OUT";
-const FS_STATE_CHANGED = "STATE_CHANGED";
+const FS_STATE_CHANGED = "FS_STATE_CHANGED";
 const ERROR = "ERROR";
 
 const authReducer = (state, action) => {
@@ -39,15 +40,18 @@ const authReducer = (state, action) => {
         ...state,
         user: action.user,
         showNavLinks: true,
+        error: null,
         showSignedInLinks: !!action.user,
         s,
         redirect
       };
-    case CREATING_USER:
     case LOGGING_OUT:
-      return { ...state, s: action.type };
+      return { ...state, s: action.type, redirect: true, user: null };
+    case CREATING_USER:
     case LOGGING_IN:
       return { ...state, s: action.type, redirect: false };
+    case UPDATE_PROFILE:
+      return { ...state, user: { ...state.user, ...action.user } };
     case ERROR:
       return { ...state, error: action.error };
     default:
@@ -60,16 +64,29 @@ const AuthStoreProvider = ({ children }) => {
 
   React.useEffect(
     () =>
-      fireStore.onAuthStateChanged(user => {
-        dispatch({ type: FS_STATE_CHANGED, user });
+      fireStore.onAuthStateChanged(async user => {
+        if (user) {
+          try {
+            const profile = await fireStore.getUserProfile(user.uid);
+            dispatch({ type: FS_STATE_CHANGED, user: profile });
+          } catch (error) {
+            // need to do something here
+          }
+        } else {
+          dispatch({ type: FS_STATE_CHANGED, user: null });
+        }
       }),
     []
   );
 
   const createUser = React.useCallback(async user => {
-    dispatch({ type: CREATING_USER });
-    const result = await fireStore.createUser(user);
-    await fireStore.createUserInDb({ ...user, uid: result.user.uid });
+    dispatch({ type: CREATING_USER, user });
+    try {
+      const result = await fireStore.createUser(user);
+      dispatch({ type: UPDATE_PROFILE, user: result.user });
+    } catch (e) {
+      dispatch({ type: ERROR, error: `Create user failed! ${e.message}` });
+    }
   }, []);
   const loginUser = React.useCallback(async user => {
     dispatch({ type: LOGGING_IN });
@@ -77,8 +94,8 @@ const AuthStoreProvider = ({ children }) => {
   }, []);
 
   const logoutUser = React.useCallback(async () => {
-    await fireStore.logoutUser();
     dispatch({ type: LOGGING_OUT });
+    await fireStore.logoutUser();
   }, []);
 
   return (
