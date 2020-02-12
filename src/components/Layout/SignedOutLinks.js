@@ -7,7 +7,7 @@ const SignedOutLinks = () => {
   return (
     <>
       <Button color="inherit" component={NavLink} to="/signin">
-        Log In
+        Sign In
       </Button>
       <Button color="inherit" component={NavLink} to="/signup">
         Sign Up

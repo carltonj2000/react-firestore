@@ -1,9 +1,13 @@
 import React from "react";
+import { Redirect } from "react-router-dom";
+
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 
 import Notifications from "./Notifications";
 import ProjectList from "../projects/ProjectList";
+
+import { authStore } from "../../AuthStore";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -28,16 +32,23 @@ const useStyles = makeStyles(theme => ({
 
 const Dashboard = () => {
   const classes = useStyles();
-  return (
-    <div className={classes.root}>
-      <Paper className={classes.projectList}>
-        <ProjectList />
-      </Paper>
-      <Paper className={classes.notifications}>
-        <Notifications />
-      </Paper>
-    </div>
-  );
+  const { auth } = React.useContext(authStore);
+
+  console.log("db", auth.redirect, auth.user);
+
+  if (auth.redirect) return <Redirect to="/signin" />;
+  else if (auth.user)
+    return (
+      <div className={classes.root}>
+        <Paper className={classes.projectList}>
+          <ProjectList />
+        </Paper>
+        <Paper className={classes.notifications}>
+          <Notifications />
+        </Paper>
+      </div>
+    );
+  else return null;
 };
 
 export default Dashboard;

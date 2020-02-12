@@ -28,7 +28,7 @@ const SignInLinks = () => {
 
   const handleLogout = () => {
     logoutUser();
-    history.push("/");
+    history.push("/signin");
   };
 
   return (

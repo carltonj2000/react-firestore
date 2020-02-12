@@ -6,6 +6,7 @@ import serviceAccount from "./serviceAccountKey.js";
 
 firebase.initializeApp(serviceAccount);
 const db = firebase.firestore();
+const auth = firebase.auth();
 
 const getProjects = () =>
   db
@@ -32,12 +33,12 @@ const deleteProject = ref =>
     .doc(ref)
     .delete();
 
-const onAuthStateChanged = cb => firebase.auth().onAuthStateChanged(cb);
-const createUser = user =>
-  firebase.auth().createUserWithEmailAndPassword(user.email, user.password);
-const loginUser = user =>
-  firebase.auth().signInWithEmailAndPassword(user.email, user.password);
-const logoutUser = user => firebase.auth().signOut();
+const onAuthStateChanged = cb => auth.onAuthStateChanged(cb);
+const createUser = ({ email, password }) =>
+  auth.createUserWithEmailAndPassword(email, password);
+const loginUser = ({ email, password }) =>
+  auth.signInWithEmailAndPassword(email, password);
+const logoutUser = () => auth.signOut();
 
 const createUserInDb = user =>
   console.log(user) || db.collection("users").add(user);

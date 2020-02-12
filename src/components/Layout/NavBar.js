@@ -7,8 +7,8 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 
-import SignInLinks from "./SignedInLinks";
-import SignOutLinks from "./SignedOutLinks";
+import SignedInLinks from "./SignedInLinks";
+import SignedOutLinks from "./SignedOutLinks";
 
 import { authStore } from "../../AuthStore";
 
@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
 
 const Navbar = () => {
   const classes = useStyles();
-  const { currentUser } = React.useContext(authStore);
+  const { auth } = React.useContext(authStore);
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -49,7 +49,15 @@ const Navbar = () => {
           >
             Sophie And Champagne
           </Typography>
-          <div>{currentUser ? <SignInLinks /> : <SignOutLinks />}</div>
+          <div>
+            {auth.showNavLinks ? (
+              auth.showSignedInLinks ? (
+                <SignedInLinks />
+              ) : (
+                <SignedOutLinks />
+              )
+            ) : null}
+          </div>
         </Toolbar>
       </AppBar>
     </div>
