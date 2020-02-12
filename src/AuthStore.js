@@ -23,7 +23,6 @@ const FS_STATE_CHANGED = "STATE_CHANGED";
 const ERROR = "ERROR";
 
 const authReducer = (state, action) => {
-  console.log("auth reducer", action, state);
   switch (action.type) {
     case FS_STATE_CHANGED:
       let { redirect, s } = state;
@@ -83,7 +82,15 @@ const AuthStoreProvider = ({ children }) => {
   }, []);
 
   return (
-    <Provider value={{ auth, createUser, loginUser, logoutUser }}>
+    <Provider
+      value={{
+        auth,
+        states: { UNINITIALIZED_STATE },
+        createUser,
+        loginUser,
+        logoutUser
+      }}
+    >
       {children}
     </Provider>
   );

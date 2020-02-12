@@ -9,6 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 
 import { projectStore } from "../../ProjectStore";
+import { authStore } from "../../AuthStore";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -47,6 +48,7 @@ const CreateProject = () => {
   const { projects, createProject, updateProject } = React.useContext(
     projectStore
   );
+  const { auth } = React.useContext(authStore);
   const project = projects[id];
   const onSubmit = project => {
     if (id) updateProject({ ...projects[id], ...project }, id);
@@ -54,6 +56,7 @@ const CreateProject = () => {
     history.push("/");
   };
 
+  if (!auth.user) history.push("/signin");
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>

@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 
 import { fade, makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
@@ -7,6 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import { Divider } from "@material-ui/core";
 
 import { projectStore } from "../../ProjectStore";
+import { authStore } from "../../AuthStore";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -28,6 +29,9 @@ const ProjectDetails = () => {
   const { id } = useParams();
   const { projects } = React.useContext(projectStore);
   const project = projects[id];
+  const { auth } = React.useContext(authStore);
+  const history = useHistory();
+  if (!auth.user) history.push("/signin");
   if (project)
     return (
       <Paper className={classes.root}>

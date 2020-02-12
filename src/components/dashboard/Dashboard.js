@@ -34,8 +34,6 @@ const Dashboard = () => {
   const classes = useStyles();
   const { auth } = React.useContext(authStore);
 
-  console.log("db", auth.redirect, auth.user);
-
   if (auth.redirect) return <Redirect to="/signin" />;
   else if (auth.user)
     return (

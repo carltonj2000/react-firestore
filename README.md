@@ -3,9 +3,7 @@
 ## To Do
 
 - add error handling, via try/catch, to all firebase access
-- add check to see if user is logged in for the nav bar so that
-  when a screen refresh is done when a user is not logged you don't
-  get a flash of the menu item that show when the user is not logged in
+  - one case is when user login fails
 
 ## History
 
