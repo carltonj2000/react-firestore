@@ -42,6 +42,7 @@ const ProjectSummary = props => {
   const handleEdit = k => () => history.push(`/updateproject/${k}`);
   const handleDetails = k => () => history.push(`/project/${k}`);
 
+  if (deleteEn) return null;
   return (
     <Paper className={classes.item}>
       <Typography variant="h4" onClick={handleDetails(id)}>

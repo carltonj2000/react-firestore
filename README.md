@@ -5,6 +5,12 @@
 - add error handling, via try/catch, to all firebase access
   - one case is when user login fails
 
+## Commands
+
+- `firebase login` - login to firebase
+- `firebase init` - select hosting and function not firestore
+- `firebase deploy --only functions` - don't deploy client app only functions
+
 ## History
 
 The code in this repository is based on the following.

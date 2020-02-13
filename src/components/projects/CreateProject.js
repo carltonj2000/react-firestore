@@ -50,9 +50,9 @@ const CreateProject = () => {
   );
   const { auth } = React.useContext(authStore);
   const project = projects[id];
-  const onSubmit = project => {
-    if (id) updateProject({ ...projects[id], ...project }, id);
-    else createProject(project, auth.user);
+  const onSubmit = async project => {
+    if (id) await updateProject({ ...projects[id], ...project }, id);
+    else await createProject(project, auth.user);
     history.push("/");
   };
 

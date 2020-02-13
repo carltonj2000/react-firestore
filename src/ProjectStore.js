@@ -31,8 +31,10 @@ const projectReducer = (state, action) => {
       state[CREATE_PROJECT_ERROR] = action.error;
       return state;
     case DELETE_PROJECT:
-      const deleteState = { ...state };
-      delete deleteState[action.uid];
+      const deleteState = Object.keys(state).reduce((a, k) => {
+        if (state[k].uid !== action.uid) a[k] = state[k];
+        return a;
+      }, {});
       return deleteState;
     case UPDATE_PROJECT:
       state[action.uid] = action.project;
@@ -57,12 +59,11 @@ const ProjectStoreProvider = ({ children }) => {
 
   const createProject = React.useCallback(async (project, user) => {
     try {
-      project.createdAt = new Date();
+      project.createdAt = fireStore.toFbFsDate(new Date());
       project.authorFirstName = user.firstName;
       project.authorLastName = user.lastName;
       const pRef = await fireStore.createProject(project);
-      project.authorId = pRef.uid;
-      dispatch({ type: CREATE_PROJECT, project, uid: pRef.uid });
+      dispatch({ type: CREATE_PROJECT, project, uid: pRef.id });
     } catch (error) {
       dispatch({ type: CREATE_PROJECT_ERROR, error });
     }

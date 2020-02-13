@@ -8,6 +8,7 @@ firebase.initializeApp(serviceAccount);
 const db = firebase.firestore();
 const auth = firebase.auth();
 
+const toFbFsDate = date => firebase.firestore.Timestamp.fromDate(date);
 const getProjects = () =>
   db
     .collection("projects")
@@ -53,6 +54,17 @@ const loginUser = user =>
   auth.signInWithEmailAndPassword(user.email, user.password);
 const logoutUser = () => auth.signOut();
 
+const getNotifications = () =>
+  db
+    .collection("notifications")
+    .get()
+    .then(querySnapshot => {
+      const notification = [];
+      querySnapshot.forEach(doc =>
+        notification.push({ ...doc.data(), uid: doc.id })
+      );
+      return notification;
+    });
 export default {
   getProjects,
   createProject,
@@ -62,5 +74,7 @@ export default {
   createUser,
   loginUser,
   logoutUser,
-  getUserProfile
+  getUserProfile,
+  toFbFsDate,
+  getNotifications
 };
