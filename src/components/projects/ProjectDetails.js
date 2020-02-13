@@ -6,6 +6,8 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import { Divider } from "@material-ui/core";
 
+import moment from "moment";
+
 import { projectStore } from "../../ProjectStore";
 import { authStore } from "../../AuthStore";
 
@@ -42,7 +44,7 @@ const ProjectDetails = () => {
           Posted by {project.authorFirstName} {project.authorLastName}
         </Typography>
         <Typography variant="subtitle2" className={classes.date}>
-          5th February, 10:30 AM
+          {project.createdAt && moment(project.createdAt.toDate()).calendar()}
         </Typography>
       </Paper>
     );

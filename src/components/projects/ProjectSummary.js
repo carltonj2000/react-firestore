@@ -56,11 +56,7 @@ const ProjectSummary = props => {
           : "Unknown"}
       </Typography>
       <Typography variant="body2" className={classes.date}>
-        {project.createdAt
-          ? moment(project.createdAt.seconds * 1000).format(
-              "MMMM Do YYYY, h:mm:ss a"
-            )
-          : "5th February, 10:30 AM"}
+        {project.createdAt && moment(project.createdAt.toDate()).calendar()}
       </Typography>
       <IconButton onClick={handleDelete(id)} disabled={deleteEn}>
         <DeleteIcon />
