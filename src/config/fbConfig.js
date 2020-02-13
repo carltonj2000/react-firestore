@@ -65,6 +65,18 @@ const getNotifications = () =>
       );
       return notification;
     });
+
+const watchNotifications = cb =>
+  db.collection("notifications").onSnapshot(snapshots => {
+    const notification = [];
+    snapshots.forEach(doc => {
+      const data = doc.data();
+      notification.push({ ...data, uid: doc.id });
+    });
+    cb(notification);
+    return notification;
+  });
+
 export default {
   getProjects,
   createProject,
@@ -76,5 +88,6 @@ export default {
   logoutUser,
   getUserProfile,
   toFbFsDate,
-  getNotifications
+  getNotifications,
+  watchNotifications
 };

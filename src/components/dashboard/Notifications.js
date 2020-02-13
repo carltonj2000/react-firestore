@@ -19,9 +19,7 @@ const useStyles = makeStyles(theme => ({
 const Notifications = () => {
   const classes = useStyles();
   const [notifications, notificationsSet] = React.useState([]);
-  React.useEffect(() => {
-    fireStore.getNotifications().then(notificationsSet);
-  }, []);
+  React.useEffect(() => fireStore.watchNotifications(notificationsSet), []);
   return (
     <div className={classes.root}>
       <Typography variant="h4">Notifications </Typography>
