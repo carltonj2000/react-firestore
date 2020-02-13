@@ -25,17 +25,17 @@ const projectReducer = (state, action) => {
     case SET_PROJECTS:
       return action.projects;
     case CREATE_PROJECT:
-      state[action.id] = action.project;
+      state[action.uid] = action.project;
       return state;
     case CREATE_PROJECT_ERROR:
       state[CREATE_PROJECT_ERROR] = action.error;
       return state;
     case DELETE_PROJECT:
       const deleteState = { ...state };
-      delete deleteState[action.id];
+      delete deleteState[action.uid];
       return deleteState;
     case UPDATE_PROJECT:
-      state[action.id] = action.project;
+      state[action.uid] = action.project;
       return state;
     default:
       throw new Error();
@@ -50,27 +50,27 @@ const ProjectStoreProvider = ({ children }) => {
     dispatch({ type: SET_PROJECTS, projects });
   }, []);
 
-  const deleteProject = React.useCallback(async id => {
-    await fireStore.deleteProject(id);
-    dispatch({ type: DELETE_PROJECT, id });
+  const deleteProject = React.useCallback(async uid => {
+    await fireStore.deleteProject(uid);
+    dispatch({ type: DELETE_PROJECT, uid });
   }, []);
 
-  const createProject = React.useCallback(async project => {
+  const createProject = React.useCallback(async (project, user) => {
     try {
       project.createdAt = new Date();
-      project.authorFirstName = "Carlton";
-      project.authorLastName = "Joseph";
-      project.authorId = "1";
+      project.authorFirstName = user.firstName;
+      project.authorLastName = user.lastName;
       const pRef = await fireStore.createProject(project);
-      dispatch({ type: CREATE_PROJECT, project, id: pRef.id });
+      project.authorId = pRef.uid;
+      dispatch({ type: CREATE_PROJECT, project, uid: pRef.uid });
     } catch (error) {
       dispatch({ type: CREATE_PROJECT_ERROR, error });
     }
   }, []);
 
-  const updateProject = React.useCallback(async (project, id) => {
-    await fireStore.updateProject(project, id);
-    dispatch({ type: UPDATE_PROJECT, project, id });
+  const updateProject = React.useCallback(async (project, uid) => {
+    await fireStore.updateProject(project, uid);
+    dispatch({ type: UPDATE_PROJECT, project, uid });
   }, []);
 
   return (

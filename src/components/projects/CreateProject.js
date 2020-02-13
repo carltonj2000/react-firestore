@@ -52,7 +52,7 @@ const CreateProject = () => {
   const project = projects[id];
   const onSubmit = project => {
     if (id) updateProject({ ...projects[id], ...project }, id);
-    else createProject(project);
+    else createProject(project, auth.user);
     history.push("/");
   };
 

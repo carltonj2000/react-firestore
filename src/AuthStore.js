@@ -68,7 +68,10 @@ const AuthStoreProvider = ({ children }) => {
         if (user) {
           try {
             const profile = await fireStore.getUserProfile(user.uid);
-            dispatch({ type: FS_STATE_CHANGED, user: profile });
+            dispatch({
+              type: FS_STATE_CHANGED,
+              user: { ...profile, uid: user.uid }
+            });
           } catch (error) {
             // need to do something here
           }

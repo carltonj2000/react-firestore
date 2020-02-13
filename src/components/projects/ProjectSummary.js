@@ -47,7 +47,14 @@ const ProjectSummary = props => {
       <Typography variant="h4" onClick={handleDetails(id)}>
         {project.title}
       </Typography>
-      <Typography variant="body1">Posted by Carlton</Typography>
+      <Typography variant="body1">
+        Posted by{" "}
+        {project.authorFirstName
+          ? project.authorLastName
+            ? `${project.authorFirstName} ${project.authorLastName}`
+            : `${project.authorFirstName}`
+          : "Unknown"}
+      </Typography>
       <Typography variant="body2" className={classes.date}>
         {project.createdAt
           ? moment(project.createdAt.seconds * 1000).format(
