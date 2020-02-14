@@ -69,7 +69,7 @@ const getNotifications = () =>
 const watchNotifications = cb =>
   db
     .collection("notifications")
-    .orderBy("time")
+    .orderBy("time", "desc")
     .limit(3)
     .onSnapshot(snapshots => {
       const notification = [];
