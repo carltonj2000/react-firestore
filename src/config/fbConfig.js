@@ -67,15 +67,19 @@ const getNotifications = () =>
     });
 
 const watchNotifications = cb =>
-  db.collection("notifications").onSnapshot(snapshots => {
-    const notification = [];
-    snapshots.forEach(doc => {
-      const data = doc.data();
-      notification.push({ ...data, uid: doc.id });
+  db
+    .collection("notifications")
+    .orderBy("time")
+    .limit(3)
+    .onSnapshot(snapshots => {
+      const notification = [];
+      snapshots.forEach(doc => {
+        const data = doc.data();
+        notification.push({ ...data, uid: doc.id });
+      });
+      cb(notification);
+      return notification;
     });
-    cb(notification);
-    return notification;
-  });
 
 export default {
   getProjects,
